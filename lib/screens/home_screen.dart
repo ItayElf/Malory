@@ -24,6 +24,7 @@ class Home extends StatelessWidget {
                 Text(
                   "Malory",
                   style: Theme.of(context).textTheme.headline1,
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(
                   height: convert(25),
