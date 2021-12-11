@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:malory/screens/auth_screen.dart';
+import 'package:malory/services/router.dart';
 import 'package:malory/utils.dart';
 
 void main() async {
@@ -101,9 +101,8 @@ class MyApp extends StatelessWidget {
             cursorColor: Color(0xff041026),
           ),
         ),
-        home: AuthScreen(
-          register: false,
-        ),
+        initialRoute: RouterHelper.start,
+        onGenerateRoute: RouterHelper.generateRoute,
       ),
     );
   }

@@ -10,6 +10,8 @@ class Client {
   static String _useranme = "";
   static String _password = "";
 
+  String get username => _useranme;
+
   static Future<String> apiVersion() async {
     Response response = await http.get(Uri.http(_baseUrl, "/api/version"));
     if (response.statusCode != 200) {

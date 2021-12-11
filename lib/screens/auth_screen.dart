@@ -66,19 +66,18 @@ class AuthScreen extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  if (!kIsWeb)
-                    Positioned(
-                      top: convert(40),
-                      left: convert(40),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: convert(64),
-                        ),
-                        onPressed: Navigator.of(context).pop,
+                  Positioned(
+                    top: convert(40),
+                    left: convert(40),
+                    child: InkWell(
+                      child: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: convert(64),
                       ),
+                      onTap: Navigator.of(context).pop,
                     ),
+                  ),
                   Align(
                     alignment: Alignment.center,
                     child: IntrinsicWidth(

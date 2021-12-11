@@ -33,7 +33,9 @@ class Home extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).primaryColor,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/login");
+                  },
                   child: Text(
                     "Login",
                     style: Theme.of(context).textTheme.headline2,
@@ -46,7 +48,9 @@ class Home extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).primaryColor,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/register");
+                  },
                   child: Text(
                     "Register",
                     style: Theme.of(context).textTheme.headline2,
