@@ -1,4 +1,4 @@
-package com.example.malory
+package com.itaybenhaim.malory
 
 import io.flutter.embedding.android.FlutterActivity
 

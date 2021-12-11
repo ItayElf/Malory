@@ -103,7 +103,7 @@ packages:
     source: hosted
     version: "2.1.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       url: "https://pub.dartlang.org"
@@ -282,15 +282,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.3.1"
-  window_manager:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: main
-      resolved-ref: ed29a6aaba5174e1de3404182e23c1c75ff2e373
-      url: "https://github.com/leanflutter/window_manager.git"
-    source: git
-    version: "0.1.1"
   xdg_directories:
     dependency: transitive
     description:

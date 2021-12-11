@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.malory">
+    package="com.itaybenhaim.malory">
    <application
         android:label="malory"
         android:icon="@mipmap/ic_launcher">
