@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:malory/utils.dart';
 
 class Client {
   static const String _baseUrl = "127.0.0.1:5000";
@@ -11,6 +13,19 @@ class Client {
   static String _password = "";
 
   String get username => _useranme;
+
+  //TODO make better
+  static handleExceptions(BuildContext context,  Function f) async {
+    try {
+      await f();
+    } on OSError catch (_) {
+      showSnackBar(context, "Could not connect to server");
+    } on SocketException catch (_) {
+      showSnackBar(context, "Could not connect to server");
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
 
   static Future<String> apiVersion() async {
     Response response = await http.get(Uri.http(_baseUrl, "/api/version"));

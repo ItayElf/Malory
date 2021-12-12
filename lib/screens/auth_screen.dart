@@ -13,18 +13,6 @@ class AuthScreen extends StatelessWidget {
   final TextEditingController username = TextEditingController();
   final TextEditingController password = TextEditingController();
 
-  void showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        content: Text(
-          message,
-          style: Theme.of(context).textTheme.headline5,
-        ),
-      ),
-    );
-  }
-
   Future<void> confirmAction(BuildContext context) async {
     if (username.text.isEmpty) {
       showSnackBar(context, "Enter a username");
@@ -32,18 +20,20 @@ class AuthScreen extends StatelessWidget {
     } else if (password.text.isEmpty) {
       showSnackBar(context, "Enter a password");
       return;
-    } else if (password.text.length < 8) {
+    } else if (password.text.length < 8 && register) {
       showSnackBar(context, "Password needs to be at least 8 characters long");
       return;
     }
 
-    if (register) {
-      bool ans = await Client.registerUser(username.text, password.text);
-      print(ans);
-    } else {
-      bool ans = await Client.verifyUser(username.text, password.text);
-      print(ans);
-    }
+    Client.handleExceptions(context, () async {
+      if (register) {
+        bool ans = await Client.registerUser(username.text, password.text);
+        print(ans);
+      } else {
+        bool ans = await Client.verifyUser(username.text, password.text);
+        print(ans);
+      }
+    });
   }
 
   @override
