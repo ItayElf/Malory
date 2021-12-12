@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:malory/screens/auth_screen.dart';
 import 'package:malory/screens/home_screen.dart';
+import 'package:malory/services/custom_page_route.dart';
 
 class RouterHelper {
   static const String start = "/";
@@ -9,22 +10,22 @@ class RouterHelper {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case "/":
-        return MaterialPageRoute(
+        return CustomPageRoute(
           settings: settings,
           builder: (_) => const Home(),
         );
       case "/login":
-        return MaterialPageRoute(
+        return CustomPageRoute(
           settings: settings,
           builder: (_) => AuthScreen(register: false),
         );
       case "/register":
-        return MaterialPageRoute(
+        return CustomPageRoute(
           settings: settings,
           builder: (_) => AuthScreen(register: true),
         );
       default:
-        return MaterialPageRoute(
+        return CustomPageRoute(
           settings: settings,
           builder: (_) => Scaffold(
             body: Center(
