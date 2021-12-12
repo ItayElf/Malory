@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:malory/classes/attribute.dart';
 import 'package:malory/utils.dart';
 
 class Client {
@@ -15,7 +16,7 @@ class Client {
   String get username => _useranme;
 
   //TODO make better
-  static handleExceptions(BuildContext context,  Function f) async {
+  static handleExceptions(BuildContext context, Function f) async {
     try {
       await f();
     } on OSError catch (_) {
@@ -74,5 +75,32 @@ class Client {
       _password = password;
     }
     return isOk;
+  }
+
+  static Future<List<Attribute>> getAllAttributes() async {
+    Response response = await http.get(
+      Uri.http(
+        _baseUrl,
+        "/api/attributes",
+      ),
+    );
+    if (response.statusCode != 200) {
+      throw HttpException(response.body);
+    }
+    List<dynamic> jsonList = jsonDecode(response.body);
+    return jsonList.map((e) => Attribute.fromJson(e)).toList();
+  }
+
+  static Future<Attribute> getAttribute(String name) async {
+    Response response = await http.get(
+      Uri.http(
+        _baseUrl,
+        "/api/attribute/$name",
+      ),
+    );
+    if (response.statusCode != 200) {
+      throw HttpException(response.body);
+    }
+    return Attribute.fromJson(jsonDecode(response.body));
   }
 }
