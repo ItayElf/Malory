@@ -17,12 +17,12 @@ class RouterHelper {
       case "/login":
         return CustomPageRoute(
           settings: settings,
-          builder: (_) => AuthScreen(register: false),
+          builder: (_) => const AuthScreen(register: false),
         );
       case "/register":
         return CustomPageRoute(
           settings: settings,
-          builder: (_) => AuthScreen(register: true),
+          builder: (_) => const AuthScreen(register: true),
         );
       default:
         return CustomPageRoute(

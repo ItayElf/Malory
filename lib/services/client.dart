@@ -24,6 +24,8 @@ class Client {
       showSnackBar(context, "Could not connect to server");
     } on SocketException catch (_) {
       showSnackBar(context, "Could not connect to server");
+    } on HttpException catch (e) {
+      showSnackBar(context, e.toString().replaceAll("HttpException: ", ""));
     } catch (e) {
       showSnackBar(context, e.toString());
     }

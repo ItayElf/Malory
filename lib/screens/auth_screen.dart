@@ -3,14 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:malory/services/client.dart';
 import 'package:malory/utils.dart';
 
-class AuthScreen extends StatelessWidget {
-  AuthScreen({
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({
     Key? key,
     required this.register,
   }) : super(key: key);
 
   final bool register;
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController username = TextEditingController();
+
   final TextEditingController password = TextEditingController();
 
   Future<void> confirmAction(BuildContext context) async {
@@ -20,13 +27,13 @@ class AuthScreen extends StatelessWidget {
     } else if (password.text.isEmpty) {
       showSnackBar(context, "Enter a password");
       return;
-    } else if (password.text.length < 8 && register) {
+    } else if (password.text.length < 8 && widget.register) {
       showSnackBar(context, "Password needs to be at least 8 characters long");
       return;
     }
 
     Client.handleExceptions(context, () async {
-      if (register) {
+      if (widget.register) {
         bool ans = await Client.registerUser(username.text, password.text);
         print(ans);
       } else {
@@ -76,7 +83,7 @@ class AuthScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            register ? "Register" : "Login",
+                            widget.register ? "Register" : "Login",
                             style: Theme.of(context).textTheme.headline1,
                             textAlign: TextAlign.center,
                           ),
