@@ -14,7 +14,7 @@ class Client {
   static String _useranme = "";
   static String _password = "";
 
-  String get username => _useranme;
+  static String get username => _useranme;
 
   //TODO make better
   static handleExceptions(BuildContext context, Function f) async {

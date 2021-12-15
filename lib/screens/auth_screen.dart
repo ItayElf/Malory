@@ -33,12 +33,14 @@ class _AuthScreenState extends State<AuthScreen> {
     }
 
     Client.handleExceptions(context, () async {
+      bool ans;
       if (widget.register) {
-        bool ans = await Client.registerUser(username.text, password.text);
-        print(ans);
+        ans = await Client.registerUser(username.text, password.text);
       } else {
-        bool ans = await Client.verifyUser(username.text, password.text);
-        print(ans);
+        ans = await Client.verifyUser(username.text, password.text);
+      }
+      if (ans) {
+        Navigator.of(context).pushNamed("/lobby");
       }
     });
   }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:malory/screens/auth_screen.dart';
 import 'package:malory/screens/home_screen.dart';
+import 'package:malory/screens/lobby_screen.dart';
 import 'package:malory/services/custom_page_route.dart';
 
 class RouterHelper {
@@ -23,6 +24,11 @@ class RouterHelper {
         return CustomPageRoute(
           settings: settings,
           builder: (_) => const AuthScreen(register: true),
+        );
+      case "/lobby":
+        return CustomPageRoute(
+          builder: (_) => const Lobby(),
+          settings: settings,
         );
       default:
         return CustomPageRoute(
