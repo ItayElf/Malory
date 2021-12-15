@@ -52,7 +52,9 @@ class Lobby extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).primaryColor,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/wiki");
+                  },
                   child: Text(
                     "Wiki",
                     style: Theme.of(context).textTheme.headline2,

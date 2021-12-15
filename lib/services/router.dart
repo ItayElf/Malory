@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:malory/screens/auth_screen.dart';
 import 'package:malory/screens/home_screen.dart';
 import 'package:malory/screens/lobby_screen.dart';
+import 'package:malory/screens/wiki/wiki_screen.dart';
 import 'package:malory/services/custom_page_route.dart';
 
 class RouterHelper {
@@ -28,6 +29,11 @@ class RouterHelper {
       case "/lobby":
         return CustomPageRoute(
           builder: (_) => const Lobby(),
+          settings: settings,
+        );
+      case "/wiki":
+        return CustomPageRoute(
+          builder: (_) => const Wiki(),
           settings: settings,
         );
       default:
