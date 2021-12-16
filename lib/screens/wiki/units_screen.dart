@@ -14,7 +14,8 @@ class UnitsScreen extends StatefulWidget {
 class _UnitsScreenState extends State<UnitsScreen> {
   List<Unit> allUnits = [];
   List<Unit> filteredUnits = [];
-  List<String> nations = [];
+
+  final TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
@@ -22,9 +23,19 @@ class _UnitsScreenState extends State<UnitsScreen> {
     () async {
       allUnits = await Client.getAllUnits();
       filteredUnits = List.from(allUnits);
-      nations = await Client.getNations();
       setState(() {});
     }();
+  }
+
+  void filter() {
+    if (controller.text.isNotEmpty) {
+      filteredUnits = allUnits
+          .where((e) => e.name.toLowerCase().contains(controller.text))
+          .toList();
+    } else {
+      filteredUnits = List.from(allUnits);
+    }
+    setState(() {});
   }
 
   @override
@@ -64,6 +75,39 @@ class _UnitsScreenState extends State<UnitsScreen> {
                         ),
                       ),
                     ],
+                  ),
+                  TextFormField(
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          fontSize: convert(25),
+                        ),
+                    controller: controller,
+                    decoration: InputDecoration(
+                      fillColor: Theme.of(context).primaryColor,
+                      filled: true,
+                      hintText: "Search",
+                      hintStyle:
+                          Theme.of(context).textTheme.bodyText1!.copyWith(
+                                color: Colors.white.withAlpha(127),
+                                fontSize: convert(25),
+                              ),
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.all(convert(8)),
+                        child: Icon(
+                          Icons.search,
+                          size: convert(24),
+                          color: Colors.white,
+                        ),
+                      ),
+                      focusColor: Theme.of(context).primaryColorLight,
+                      hoverColor: Theme.of(context).primaryColorLight,
+                      border: InputBorder.none,
+                    ),
+                    onChanged: (text) {
+                      filter();
+                    },
+                  ),
+                  SizedBox(
+                    height: convert(15),
                   ),
                   Row(
                     children: [
