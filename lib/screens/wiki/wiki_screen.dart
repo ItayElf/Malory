@@ -54,7 +54,9 @@ class Wiki extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             primary: Theme.of(context).primaryColor,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).pushNamed("/units");
+                          },
                           child: Text(
                             "Units",
                             style: Theme.of(context).textTheme.headline2,

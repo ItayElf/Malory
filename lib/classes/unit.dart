@@ -55,4 +55,8 @@ class Unit {
   int rangedAp;
   List<Attribute> attributes;
   int idx;
+
+  String get costAsClean => cost.toStringAsFixed(
+        cost.truncateToDouble() == cost ? 0 : 1,
+      );
 }
