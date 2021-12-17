@@ -4,6 +4,7 @@ import 'package:malory/classes/unit.dart';
 import 'package:malory/services/client.dart';
 import 'package:malory/services/subclass_icons_icons.dart';
 import 'package:malory/utils.dart';
+import 'package:malory/widgets/filter_card.dart';
 import 'package:malory/widgets/unit_card.dart';
 
 class UnitsScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _UnitsScreenState extends State<UnitsScreen> {
   final TextEditingController search = TextEditingController();
   final TextEditingController costMin = TextEditingController();
   final TextEditingController costMax = TextEditingController();
-  String? role;
+  TextEditingController role = TextEditingController();
 
   @override
   void initState() {
@@ -50,9 +51,9 @@ class _UnitsScreenState extends State<UnitsScreen> {
     if (costMax.text.isNotEmpty && e.cost > double.parse(costMax.text)) {
       return false;
     }
-    if (role != null &&
-        role!.isNotEmpty &&
-        e.subclass.toLowerCase() != role!.toLowerCase()) {
+    if (role.text.isNotEmpty &&
+        role.text != "Any" &&
+        e.subclass.toLowerCase() != role.text.toLowerCase()) {
       return false;
     }
     return true;
@@ -192,114 +193,12 @@ class _UnitsScreenState extends State<UnitsScreen> {
               Positioned(
                 right: convert(15),
                 top: convert(95),
-                child: SizedBox(
-                  // color: Colors.red,
-                  width: convert(250),
-                  height: convert(450),
-                  child: Card(
-                    color: Theme.of(context).primaryColor,
-                    child: Padding(
-                      padding: EdgeInsets.all(convert(8)),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Filters",
-                            style: Theme.of(context).textTheme.headline4,
-                          ),
-                          Expanded(
-                              child: ListView(
-                            children: [
-                              _DropTile(
-                                title: "Cost",
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: generateTextFilterField(
-                                        context,
-                                        costMin,
-                                        "Minimum",
-                                      ),
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        "-",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1,
-                                      ),
-                                    ),
-                                    Flexible(
-                                      child: generateTextFilterField(
-                                        context,
-                                        costMax,
-                                        "Maximum",
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              _DropTile(
-                                title: "Role",
-                                child: DropdownButton(
-                                  value: role,
-                                  hint: Text(
-                                    "Select Role",
-                                    style: Theme.of(context).textTheme.caption,
-                                  ),
-                                  dropdownColor:
-                                      Theme.of(context).primaryColorLight,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      role = value ?? "";
-                                      filter();
-                                    });
-                                  },
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: "",
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.check_circle_outline,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(
-                                            width: convert(8),
-                                          ),
-                                          const Text("Any"),
-                                        ],
-                                      ),
-                                    ),
-                                    ...roles
-                                        .map(
-                                          (e) => DropdownMenuItem(
-                                            value: e,
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  SubclassIcons.getIcon(e),
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(
-                                                  width: convert(8),
-                                                ),
-                                                Text(e),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ))
-                        ],
-                      ),
-                    ),
-                  ),
+                child: FilterCard(
+                  filter: filter,
+                  costMin: costMin,
+                  costMax: costMax,
+                  role: role,
+                  roles: roles,
                 ),
               ),
             ],
@@ -337,40 +236,6 @@ class _UnitsScreenState extends State<UnitsScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _DropTile extends StatelessWidget {
-  const _DropTile({
-    Key? key,
-    required this.title,
-    required this.child,
-  }) : super(key: key);
-
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Divider(
-          color: Colors.white,
-        ),
-        Theme(
-          data: Theme.of(context).copyWith(
-            dividerColor: Colors.transparent,
-          ),
-          child: ExpansionTile(
-            title: Text(
-              title,
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            children: [child],
-          ),
-        ),
-      ],
     );
   }
 }
