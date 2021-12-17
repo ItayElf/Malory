@@ -147,17 +147,39 @@ class _UnitsScreenState extends State<UnitsScreen> {
                       ),
                       Row(
                         children: [
-                          Flexible(
-                            child: GridView.count(
-                              shrinkWrap: true,
-                              crossAxisCount: 4,
-                              crossAxisSpacing: convert(25),
-                              mainAxisSpacing: convert(25),
-                              children: filteredUnits
-                                  .map((e) => UnitCard(unit: e))
-                                  .toList(),
-                            ),
-                          ),
+                          filteredUnits.isNotEmpty
+                              ? Flexible(
+                                  child: GridView.count(
+                                    shrinkWrap: true,
+                                    crossAxisCount: 4,
+                                    crossAxisSpacing: convert(25),
+                                    mainAxisSpacing: convert(25),
+                                    children: filteredUnits
+                                        .map((e) => UnitCard(unit: e))
+                                        .toList(),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        SubclassIcons.frontline,
+                                        color: Colors.white,
+                                        size: convert(48),
+                                      ),
+                                      SizedBox(
+                                        height: convert(10),
+                                      ),
+                                      Text(
+                                        "No unit was found",
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                           SizedBox(
                             width: convert(300),
                           ),
