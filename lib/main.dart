@@ -19,6 +19,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: const Color(0xff027368),
           primaryColorLight: const Color(0xff167e74),
+          unselectedWidgetColor: Colors.white,
+          colorScheme: const ColorScheme.light(
+            primary: Colors.white,
+          ),
           textTheme: TextTheme(
             headline1: GoogleFonts.cinzelDecorative(
               fontSize: convert(71),

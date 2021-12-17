@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:malory/classes/unit.dart';
 import 'package:malory/services/subclass_icons_icons.dart';
-import 'package:malory/services/subclass_icons_icons.dart';
 import 'package:malory/utils.dart';
 
 class UnitCard extends StatelessWidget {

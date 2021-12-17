@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:malory/classes/unit.dart';
 import 'package:malory/services/client.dart';
 import 'package:malory/utils.dart';
@@ -15,7 +16,9 @@ class _UnitsScreenState extends State<UnitsScreen> {
   List<Unit> allUnits = [];
   List<Unit> filteredUnits = [];
 
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController search = TextEditingController();
+  final TextEditingController costMin = TextEditingController();
+  final TextEditingController costMax = TextEditingController();
 
   @override
   void initState() {
@@ -28,12 +31,22 @@ class _UnitsScreenState extends State<UnitsScreen> {
   }
 
   void filter() {
-    if (controller.text.isNotEmpty) {
+    if (search.text.isNotEmpty) {
       filteredUnits = allUnits
-          .where((e) => e.name.toLowerCase().contains(controller.text))
+          .where((e) => e.name.toLowerCase().contains(search.text))
           .toList();
     } else {
       filteredUnits = List.from(allUnits);
+    }
+    if (costMin.text.isNotEmpty) {
+      filteredUnits = filteredUnits
+          .where((e) => e.cost >= double.parse(costMin.text))
+          .toList();
+    }
+    if (costMax.text.isNotEmpty) {
+      filteredUnits = filteredUnits
+          .where((e) => e.cost <= double.parse(costMax.text))
+          .toList();
     }
     setState(() {});
   }
@@ -50,89 +63,231 @@ class _UnitsScreenState extends State<UnitsScreen> {
               colors: [Color(0xff0d0d0d), Color(0xff013a40), Color(0xff0d0d0d)],
             ),
           ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: convert(15)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: convert(15)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      InkWell(
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: convert(64),
-                        ),
-                        onTap: Navigator.of(context).pop,
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          InkWell(
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: convert(64),
+                            ),
+                            onTap: Navigator.of(context).pop,
+                          ),
+                          Expanded(
+                            child: Text(
+                              "Units",
+                              style: Theme.of(context).textTheme.headline1,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Text(
-                          "Units",
-                          style: Theme.of(context).textTheme.headline1,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextFormField(
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          fontSize: convert(25),
-                        ),
-                    controller: controller,
-                    decoration: InputDecoration(
-                      fillColor: Theme.of(context).primaryColor,
-                      filled: true,
-                      hintText: "Search",
-                      hintStyle:
-                          Theme.of(context).textTheme.bodyText1!.copyWith(
-                                color: Colors.white.withAlpha(127),
-                                fontSize: convert(25),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: TextFormField(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                    fontSize: convert(25),
+                                  ),
+                              controller: search,
+                              decoration: InputDecoration(
+                                fillColor: Theme.of(context).primaryColor,
+                                filled: true,
+                                hintText: "Search",
+                                hintStyle: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(
+                                      color: Colors.white.withAlpha(127),
+                                      fontSize: convert(25),
+                                    ),
+                                prefixIcon: Padding(
+                                  padding: EdgeInsets.all(convert(8)),
+                                  child: Icon(
+                                    Icons.search,
+                                    size: convert(24),
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                focusColor: Theme.of(context).primaryColorLight,
+                                hoverColor: Theme.of(context).primaryColorLight,
+                                border: InputBorder.none,
                               ),
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.all(convert(8)),
-                        child: Icon(
-                          Icons.search,
-                          size: convert(24),
-                          color: Colors.white,
-                        ),
-                      ),
-                      focusColor: Theme.of(context).primaryColorLight,
-                      hoverColor: Theme.of(context).primaryColorLight,
-                      border: InputBorder.none,
-                    ),
-                    onChanged: (text) {
-                      filter();
-                    },
-                  ),
-                  SizedBox(
-                    height: convert(15),
-                  ),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 4,
-                          crossAxisSpacing: convert(25),
-                          mainAxisSpacing: convert(25),
-                          children: filteredUnits
-                              .map((e) => UnitCard(unit: e))
-                              .toList(),
-                        ),
+                              onChanged: (text) {
+                                filter();
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: convert(300),
+                          ),
+                        ],
                       ),
                       SizedBox(
-                        width: convert(300),
-                      )
+                        height: convert(15),
+                      ),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: GridView.count(
+                              shrinkWrap: true,
+                              crossAxisCount: 4,
+                              crossAxisSpacing: convert(25),
+                              mainAxisSpacing: convert(25),
+                              children: filteredUnits
+                                  .map((e) => UnitCard(unit: e))
+                                  .toList(),
+                            ),
+                          ),
+                          SizedBox(
+                            width: convert(300),
+                          ),
+                        ],
+                      ),
                     ],
-                  )
-                ],
+                  ),
+                ),
               ),
-            ),
+              Positioned(
+                right: convert(15),
+                top: convert(95),
+                child: SizedBox(
+                  // color: Colors.red,
+                  width: convert(250),
+                  height: convert(450),
+                  child: Card(
+                    color: Theme.of(context).primaryColor,
+                    child: Padding(
+                      padding: EdgeInsets.all(convert(8)),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Filters",
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                          Expanded(
+                              child: ListView(
+                            children: [
+                              _DropTile(
+                                title: "Cost",
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: generateTextFilterField(
+                                        context,
+                                        costMin,
+                                        "Minimum",
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        "-",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: generateTextFilterField(
+                                        context,
+                                        costMax,
+                                        "Maximum",
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ))
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  TextFormField generateTextFilterField(
+      BuildContext context, TextEditingController controller, String hint) {
+    return TextFormField(
+      controller: controller,
+      onChanged: (text) {
+        filter();
+      },
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(
+          RegExp(r'[0-9]'),
+        ),
+      ],
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
+              color: Colors.white.withAlpha(127),
+            ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white.withAlpha(127),
+          ),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DropTile extends StatelessWidget {
+  const _DropTile({
+    Key? key,
+    required this.title,
+    required this.child,
+  }) : super(key: key);
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Divider(
+          color: Colors.white,
+        ),
+        Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+          ),
+          child: ExpansionTile(
+            title: Text(
+              title,
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            children: [child],
+          ),
+        ),
+      ],
     );
   }
 }
