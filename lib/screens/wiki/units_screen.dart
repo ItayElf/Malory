@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:malory/classes/unit.dart';
 import 'package:malory/services/client.dart';
+import 'package:malory/services/subclass_icons_icons.dart';
 import 'package:malory/utils.dart';
 import 'package:malory/widgets/unit_card.dart';
 
@@ -15,10 +16,12 @@ class UnitsScreen extends StatefulWidget {
 class _UnitsScreenState extends State<UnitsScreen> {
   List<Unit> allUnits = [];
   List<Unit> filteredUnits = [];
+  List<String> roles = [];
 
   final TextEditingController search = TextEditingController();
   final TextEditingController costMin = TextEditingController();
   final TextEditingController costMax = TextEditingController();
+  String? role;
 
   @override
   void initState() {
@@ -26,29 +29,33 @@ class _UnitsScreenState extends State<UnitsScreen> {
     () async {
       allUnits = await Client.getAllUnits();
       filteredUnits = List.from(allUnits);
+      roles = List.from(allUnits.map((e) => e.subclass).toSet());
+      roles.sort((a, b) => a.compareTo(b));
       setState(() {});
     }();
   }
 
   void filter() {
-    if (search.text.isNotEmpty) {
-      filteredUnits = allUnits
-          .where((e) => e.name.toLowerCase().contains(search.text))
-          .toList();
-    } else {
-      filteredUnits = List.from(allUnits);
-    }
-    if (costMin.text.isNotEmpty) {
-      filteredUnits = filteredUnits
-          .where((e) => e.cost >= double.parse(costMin.text))
-          .toList();
-    }
-    if (costMax.text.isNotEmpty) {
-      filteredUnits = filteredUnits
-          .where((e) => e.cost <= double.parse(costMax.text))
-          .toList();
-    }
+    filteredUnits = allUnits.where(_filter).toList();
     setState(() {});
+  }
+
+  bool _filter(Unit e) {
+    if (search.text.isNotEmpty && !e.name.toLowerCase().contains(search.text)) {
+      return false;
+    }
+    if (costMin.text.isNotEmpty && e.cost < double.parse(costMin.text)) {
+      return false;
+    }
+    if (costMax.text.isNotEmpty && e.cost > double.parse(costMax.text)) {
+      return false;
+    }
+    if (role != null &&
+        role!.isNotEmpty &&
+        e.subclass.toLowerCase() != role!.toLowerCase()) {
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -208,6 +215,60 @@ class _UnitsScreenState extends State<UnitsScreen> {
                                         "Maximum",
                                       ),
                                     )
+                                  ],
+                                ),
+                              ),
+                              _DropTile(
+                                title: "Role",
+                                child: DropdownButton(
+                                  value: role,
+                                  hint: Text(
+                                    "Select Role",
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
+                                  dropdownColor:
+                                      Theme.of(context).primaryColorLight,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      role = value ?? "";
+                                      filter();
+                                    });
+                                  },
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: "",
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.check_circle_outline,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(
+                                            width: convert(8),
+                                          ),
+                                          const Text("Any"),
+                                        ],
+                                      ),
+                                    ),
+                                    ...roles
+                                        .map(
+                                          (e) => DropdownMenuItem(
+                                            value: e,
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  SubclassIcons.getIcon(e),
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  width: convert(8),
+                                                ),
+                                                Text(e),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
                                   ],
                                 ),
                               )
