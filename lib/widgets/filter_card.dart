@@ -31,6 +31,8 @@ class _FilterCardState extends State<FilterCard> {
 
   String role = "";
   String nation = "";
+  String classDefense = "";
+  String classTag = "";
 
   void filter() {
     widget.setFilterUnits(widget.allUnits.where(_filter).toList());
@@ -56,6 +58,12 @@ class _FilterCardState extends State<FilterCard> {
     if (nation.isNotEmpty &&
         nation != "Any" &&
         e.category.toLowerCase() != nation.toLowerCase()) {
+      return false;
+    }
+    if (classDefense.isNotEmpty && !e.clas.contains(classDefense)) {
+      return false;
+    }
+    if (classTag.isNotEmpty && !e.clas.contains(classTag)) {
       return false;
     }
     return true;
@@ -194,7 +202,69 @@ class _FilterCardState extends State<FilterCard> {
                               .toList()
                         ],
                       ),
-                    )
+                    ),
+                    DropTile(
+                      title: "Class",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Flexible(
+                            child: DropdownButton(
+                              value: classDefense.isEmpty ? null : classDefense,
+                              hint: Text(
+                                "Defence",
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                              dropdownColor:
+                                  Theme.of(context).primaryColorLight,
+                              onChanged: (String? value) {
+                                classDefense = value.toString();
+                                filter();
+                              },
+                              items: [
+                                const DropdownMenuItem(
+                                  child: Text("Any"),
+                                  value: "Any",
+                                ),
+                                ...["Light", "Medium", "Heavy"].map(
+                                  (e) => DropdownMenuItem(
+                                    child: Text(e),
+                                    value: e,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                            child: DropdownButton(
+                              value: classTag.isEmpty ? null : classTag,
+                              hint: Text(
+                                "Tag",
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                              dropdownColor:
+                                  Theme.of(context).primaryColorLight,
+                              onChanged: (String? value) {
+                                classTag = value.toString();
+                                filter();
+                              },
+                              items: [
+                                const DropdownMenuItem(
+                                  child: Text("Any"),
+                                  value: "Any",
+                                ),
+                                ...["Cavalry", "Infantry", "Ranged"].map(
+                                  (e) => DropdownMenuItem(
+                                    child: Text(e),
+                                    value: e,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               )
