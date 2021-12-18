@@ -79,6 +79,18 @@ class _FilterCardState extends State<FilterCard> {
     return true;
   }
 
+  void reset() {
+    role = "";
+    nation = "";
+    classDefense = "";
+    classTag = "";
+    attribute = "";
+    costMax.text = "";
+    costMin.text = "";
+    widget.search.text = "";
+    filter();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -285,6 +297,17 @@ class _FilterCardState extends State<FilterCard> {
                         },
                       ),
                     ),
+                    const Divider(),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).primaryColorLight,
+                      ),
+                      onPressed: reset,
+                      child: Padding(
+                        padding: EdgeInsets.all(convert(8)),
+                        child: const Text("Reset"),
+                      ),
+                    )
                   ],
                 ),
               )
