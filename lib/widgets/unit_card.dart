@@ -11,6 +11,8 @@ class UnitCard extends StatelessWidget {
 
   final Unit unit;
 
+  static const limit = 9;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -41,8 +43,9 @@ class UnitCard extends StatelessWidget {
                 Flexible(
                   child: Text(
                     unit.name,
-                    style: Theme.of(context).textTheme.headline6,
-                    // textAlign: TextAlign.center,
+                    style: unit.name.length > limit
+                        ? Theme.of(context).textTheme.subtitle1
+                        : Theme.of(context).textTheme.headline6,
                   ),
                 )
               ],
