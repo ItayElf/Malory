@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:malory/screens/auth_screen.dart';
 import 'package:malory/screens/home_screen.dart';

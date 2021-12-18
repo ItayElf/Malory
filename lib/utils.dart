@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 double convert(double num) {
@@ -11,13 +10,13 @@ double convert(double num) {
 }
 
 void showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        content: Text(
-          message,
-          style: Theme.of(context).textTheme.headline5,
-        ),
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: Theme.of(context).primaryColor,
+      content: Text(
+        message,
+        style: Theme.of(context).textTheme.headline5,
       ),
-    );
-  }
+    ),
+  );
+}

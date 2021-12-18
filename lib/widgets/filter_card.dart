@@ -13,6 +13,7 @@ class FilterCard extends StatefulWidget {
     required this.search,
     required this.roles,
     required this.nations,
+    required this.attrs,
   }) : super(key: key);
 
   final void Function(List<Unit>) setFilterUnits;
@@ -20,6 +21,7 @@ class FilterCard extends StatefulWidget {
   final TextEditingController search;
   final List<String> roles;
   final List<String> nations;
+  final List<String> attrs;
 
   @override
   State<FilterCard> createState() => _FilterCardState();
@@ -33,6 +35,7 @@ class _FilterCardState extends State<FilterCard> {
   String nation = "";
   String classDefense = "";
   String classTag = "";
+  String attribute = "";
 
   void filter() {
     widget.setFilterUnits(widget.allUnits.where(_filter).toList());
@@ -60,10 +63,17 @@ class _FilterCardState extends State<FilterCard> {
         e.category.toLowerCase() != nation.toLowerCase()) {
       return false;
     }
-    if (classDefense.isNotEmpty && !e.clas.contains(classDefense)) {
+    if (classDefense.isNotEmpty &&
+        classDefense != "Any" &&
+        !e.clas.contains(classDefense)) {
       return false;
     }
-    if (classTag.isNotEmpty && !e.clas.contains(classTag)) {
+    if (classTag.isNotEmpty &&
+        classTag != "Any" &&
+        !e.clas.contains(classTag)) {
+      return false;
+    }
+    if (attribute.isNotEmpty && !e.hasAttribute(attribute)) {
       return false;
     }
     return true;
@@ -265,6 +275,16 @@ class _FilterCardState extends State<FilterCard> {
                         ],
                       ),
                     ),
+                    DropTile(
+                      title: "Attribute",
+                      child: _AttributeSearchField(
+                        attrs: widget.attrs,
+                        setAttribute: (value) {
+                          attribute = value;
+                          filter();
+                        },
+                      ),
+                    ),
                   ],
                 ),
               )
@@ -303,6 +323,80 @@ class _FilterCardState extends State<FilterCard> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AttributeSearchField extends StatelessWidget {
+  const _AttributeSearchField(
+      {Key? key, required this.attrs, required this.setAttribute})
+      : super(key: key);
+
+  final List<String> attrs;
+  final void Function(String) setAttribute;
+
+  @override
+  Widget build(BuildContext context) {
+    return Autocomplete<String>(
+      fieldViewBuilder: (context, controller, focusNode, onEditingComplete) =>
+          TextField(
+        controller: controller,
+        focusNode: focusNode,
+        onEditingComplete: onEditingComplete,
+        onChanged: (String value) {
+          if (value.isEmpty) {
+            setAttribute(value);
+          }
+        },
+        decoration: InputDecoration(
+          hintText: "Attribute",
+          hintStyle: Theme.of(context)
+              .textTheme
+              .subtitle1!
+              .copyWith(color: Colors.white.withAlpha(127)),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.white.withAlpha(127),
+            ),
+          ),
+          focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+      optionsViewBuilder: (context, onSelected, options) => Material(
+        color: Theme.of(context).primaryColorLight,
+        child: ListView.separated(
+          itemBuilder: (context, i) => ListTile(
+            onTap: () {
+              onSelected(options.elementAt(i));
+            },
+            tileColor: Theme.of(context).primaryColorLight,
+            title: Text(
+              options.elementAt(i),
+            ),
+          ),
+          separatorBuilder: (context, i) => Divider(
+            color: Theme.of(context).primaryColor,
+          ),
+          itemCount: options.length,
+        ),
+      ),
+      optionsBuilder: (TextEditingValue value) {
+        if (value.text.isEmpty) {
+          return const Iterable<String>.empty();
+        }
+        return attrs.where(
+          (e) => e.toLowerCase().contains(
+                value.text.toLowerCase(),
+              ),
+        );
+      },
+      onSelected: (String selection) {
+        setAttribute(selection);
+      },
     );
   }
 }

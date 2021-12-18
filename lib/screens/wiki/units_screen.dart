@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:malory/classes/unit.dart';
 import 'package:malory/services/client.dart';
 import 'package:malory/services/subclass_icons_icons.dart';
@@ -19,6 +18,7 @@ class _UnitsScreenState extends State<UnitsScreen> {
   List<Unit> filteredUnits = [];
   List<String> roles = [];
   List<String> nations = [];
+  List<String> attrs = [];
 
   final TextEditingController search = TextEditingController();
   final TextEditingController costMin = TextEditingController();
@@ -36,6 +36,8 @@ class _UnitsScreenState extends State<UnitsScreen> {
       nations = await Client.getNations();
       roles.sort();
       nations.sort();
+      attrs = (await Client.getAllAttributes()).map((e) => e.name).toList();
+      attrs.sort();
       setState(() {});
     }();
   }
@@ -181,6 +183,7 @@ class _UnitsScreenState extends State<UnitsScreen> {
                   search: search,
                   roles: roles,
                   nations: nations,
+                  attrs: attrs,
                 ),
               ),
             ],

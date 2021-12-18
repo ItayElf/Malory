@@ -59,4 +59,7 @@ class Unit {
   String get costAsClean => cost.toStringAsFixed(
         cost.truncateToDouble() == cost ? 0 : 1,
       );
+
+  bool hasAttribute(String attribute) =>
+      attributes.where((e) => e.name == attribute).length == 1;
 }
