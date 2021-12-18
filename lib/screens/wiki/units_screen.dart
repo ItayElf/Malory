@@ -40,34 +40,6 @@ class _UnitsScreenState extends State<UnitsScreen> {
     }();
   }
 
-  void filter() {
-    filteredUnits = allUnits.where(_filter).toList();
-    setState(() {});
-  }
-
-  bool _filter(Unit e) {
-    if (search.text.isNotEmpty && !e.name.toLowerCase().contains(search.text)) {
-      return false;
-    }
-    if (costMin.text.isNotEmpty && e.cost < double.parse(costMin.text)) {
-      return false;
-    }
-    if (costMax.text.isNotEmpty && e.cost > double.parse(costMax.text)) {
-      return false;
-    }
-    if (role.text.isNotEmpty &&
-        role.text != "Any" &&
-        e.subclass.toLowerCase() != role.text.toLowerCase()) {
-      return false;
-    }
-    if (nation.text.isNotEmpty &&
-        nation.text != "Any" &&
-        e.category.toLowerCase() != nation.text.toLowerCase()) {
-      return false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -142,9 +114,6 @@ class _UnitsScreenState extends State<UnitsScreen> {
                                 hoverColor: Theme.of(context).primaryColorLight,
                                 border: InputBorder.none,
                               ),
-                              onChanged: (text) {
-                                filter();
-                              },
                             ),
                           ),
                           SizedBox(
@@ -203,47 +172,18 @@ class _UnitsScreenState extends State<UnitsScreen> {
                 right: convert(15),
                 top: convert(95),
                 child: FilterCard(
-                  filter: filter,
-                  costMin: costMin,
-                  costMax: costMax,
-                  role: role,
+                  setFilterUnits: (List<Unit> units) {
+                    setState(() {
+                      filteredUnits = units;
+                    });
+                  },
+                  allUnits: allUnits,
+                  search: search,
                   roles: roles,
                   nations: nations,
-                  nation: nation,
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  TextFormField generateTextFilterField(
-      BuildContext context, TextEditingController controller, String hint) {
-    return TextFormField(
-      controller: controller,
-      onChanged: (text) {
-        filter();
-      },
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(
-          RegExp(r'[0-9]'),
-        ),
-      ],
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
-              color: Colors.white.withAlpha(127),
-            ),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.white.withAlpha(127),
-          ),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.white,
           ),
         ),
       ),

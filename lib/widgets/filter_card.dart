@@ -1,28 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:malory/classes/unit.dart';
 import 'package:malory/services/subclass_icons_icons.dart';
 import 'package:malory/utils.dart';
 import 'package:malory/widgets/drop_tile.dart';
 
-class FilterCard extends StatelessWidget {
+class FilterCard extends StatefulWidget {
   const FilterCard({
     Key? key,
-    required this.filter,
-    required this.costMin,
-    required this.costMax,
-    required this.role,
+    required this.setFilterUnits,
+    required this.allUnits,
+    required this.search,
     required this.roles,
     required this.nations,
-    required this.nation,
   }) : super(key: key);
 
-  final Function filter;
-  final TextEditingController costMin;
-  final TextEditingController costMax;
-  final TextEditingController role;
-  final TextEditingController nation;
+  final void Function(List<Unit>) setFilterUnits;
+  final List<Unit> allUnits;
+  final TextEditingController search;
   final List<String> roles;
   final List<String> nations;
+
+  @override
+  State<FilterCard> createState() => _FilterCardState();
+}
+
+class _FilterCardState extends State<FilterCard> {
+  final TextEditingController costMin = TextEditingController();
+  final TextEditingController costMax = TextEditingController();
+
+  String role = "";
+  String nation = "";
+
+  void filter() {
+    widget.setFilterUnits(widget.allUnits.where(_filter).toList());
+    setState(() {});
+  }
+
+  bool _filter(Unit e) {
+    if (widget.search.text.isNotEmpty &&
+        !e.name.toLowerCase().contains(widget.search.text)) {
+      return false;
+    }
+    if (costMin.text.isNotEmpty && e.cost < double.parse(costMin.text)) {
+      return false;
+    }
+    if (costMax.text.isNotEmpty && e.cost > double.parse(costMax.text)) {
+      return false;
+    }
+    if (role.isNotEmpty &&
+        role != "Any" &&
+        e.subclass.toLowerCase() != role.toLowerCase()) {
+      return false;
+    }
+    if (nation.isNotEmpty &&
+        nation != "Any" &&
+        e.category.toLowerCase() != nation.toLowerCase()) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.search.addListener(() {
+      filter();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +118,14 @@ class FilterCard extends StatelessWidget {
                     DropTile(
                       title: "Role",
                       child: DropdownButton(
-                        value: role.text.isEmpty ? null : role.text,
+                        value: role.isEmpty ? null : role,
                         hint: Text(
                           "Select Role",
                           style: Theme.of(context).textTheme.caption,
                         ),
                         dropdownColor: Theme.of(context).primaryColorLight,
                         onChanged: (value) {
-                          role.text = value.toString();
+                          role = value.toString();
                           filter();
                         },
                         items: [
@@ -99,7 +144,7 @@ class FilterCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                          ...roles
+                          ...widget.roles
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: e,
@@ -124,14 +169,14 @@ class FilterCard extends StatelessWidget {
                     DropTile(
                       title: "Nation",
                       child: DropdownButton(
-                        value: nation.text.isEmpty ? null : nation.text,
+                        value: nation.isEmpty ? null : nation,
                         hint: Text(
                           "Select Nation",
                           style: Theme.of(context).textTheme.caption,
                         ),
                         dropdownColor: Theme.of(context).primaryColorLight,
                         onChanged: (value) {
-                          nation.text = value.toString();
+                          nation = value.toString();
                           filter();
                         },
                         items: [
@@ -139,7 +184,7 @@ class FilterCard extends StatelessWidget {
                             child: Text("Any"),
                             value: "Any",
                           ),
-                          ...nations
+                          ...widget.nations
                               .map(
                                 (e) => DropdownMenuItem(
                                   child: Text(e),
