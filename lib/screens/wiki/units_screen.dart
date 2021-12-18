@@ -18,11 +18,13 @@ class _UnitsScreenState extends State<UnitsScreen> {
   List<Unit> allUnits = [];
   List<Unit> filteredUnits = [];
   List<String> roles = [];
+  List<String> nations = [];
 
   final TextEditingController search = TextEditingController();
   final TextEditingController costMin = TextEditingController();
   final TextEditingController costMax = TextEditingController();
   TextEditingController role = TextEditingController();
+  TextEditingController nation = TextEditingController();
 
   @override
   void initState() {
@@ -31,7 +33,9 @@ class _UnitsScreenState extends State<UnitsScreen> {
       allUnits = await Client.getAllUnits();
       filteredUnits = List.from(allUnits);
       roles = List.from(allUnits.map((e) => e.subclass).toSet());
-      roles.sort((a, b) => a.compareTo(b));
+      nations = await Client.getNations();
+      roles.sort();
+      nations.sort();
       setState(() {});
     }();
   }
@@ -54,6 +58,11 @@ class _UnitsScreenState extends State<UnitsScreen> {
     if (role.text.isNotEmpty &&
         role.text != "Any" &&
         e.subclass.toLowerCase() != role.text.toLowerCase()) {
+      return false;
+    }
+    if (nation.text.isNotEmpty &&
+        nation.text != "Any" &&
+        e.category.toLowerCase() != nation.text.toLowerCase()) {
       return false;
     }
     return true;
@@ -199,6 +208,8 @@ class _UnitsScreenState extends State<UnitsScreen> {
                   costMax: costMax,
                   role: role,
                   roles: roles,
+                  nations: nations,
+                  nation: nation,
                 ),
               ),
             ],

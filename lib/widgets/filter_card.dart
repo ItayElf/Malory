@@ -12,13 +12,17 @@ class FilterCard extends StatelessWidget {
     required this.costMax,
     required this.role,
     required this.roles,
+    required this.nations,
+    required this.nation,
   }) : super(key: key);
 
   final Function filter;
   final TextEditingController costMin;
   final TextEditingController costMax;
   final TextEditingController role;
+  final TextEditingController nation;
   final List<String> roles;
+  final List<String> nations;
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +121,35 @@ class FilterCard extends StatelessWidget {
                         ],
                       ),
                     ),
+                    DropTile(
+                      title: "Nation",
+                      child: DropdownButton(
+                        value: nation.text.isEmpty ? null : nation.text,
+                        hint: Text(
+                          "Select Nation",
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                        dropdownColor: Theme.of(context).primaryColorLight,
+                        onChanged: (value) {
+                          nation.text = value.toString();
+                          filter();
+                        },
+                        items: [
+                          const DropdownMenuItem(
+                            child: Text("Any"),
+                            value: "Any",
+                          ),
+                          ...nations
+                              .map(
+                                (e) => DropdownMenuItem(
+                                  child: Text(e),
+                                  value: e,
+                                ),
+                              )
+                              .toList()
+                        ],
+                      ),
+                    )
                   ],
                 ),
               )
