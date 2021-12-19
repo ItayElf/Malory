@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:malory/classes/player.dart';
 
 class Room {
@@ -22,4 +23,15 @@ class Room {
 
   List<Player> get playerList =>
       [player1, if (player2 != null) (player2 as Player)];
+
+  @override
+  bool operator ==(other) => other is Room && name == other.name;
+
+  @override
+  String toString() {
+    return "Room(name: $name, points: $points, player1: $player1, player2: $player2)";
+  }
+
+  @override
+  int get hashCode => hashValues(name, points, player1, player2);
 }

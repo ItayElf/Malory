@@ -13,12 +13,15 @@ class Player {
       : units = json["units"]
             .map<ActiveUnit>((e) => ActiveUnit.fromJson(e))
             .toList(),
-        data = json["data"].map<Unit>((e) => Unit.fromJson(e)).toList(),
+        data = {
+          for (String key in json["data"].keys)
+            key: Unit.fromJson(json["data"][key])
+        },
         name = json["name"],
         idx = json["idx"];
 
   List<ActiveUnit> units;
-  List<Unit> data;
+  Map<String, Unit> data;
   String name;
   int idx;
 

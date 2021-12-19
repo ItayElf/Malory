@@ -39,7 +39,9 @@ class Lobby extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).primaryColor,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/rooms");
+                  },
                   child: Text(
                     "Rooms",
                     style: Theme.of(context).textTheme.headline2,

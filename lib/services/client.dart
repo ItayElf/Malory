@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:malory/classes/attribute.dart';
+import 'package:malory/classes/room.dart';
 import 'package:malory/classes/unit.dart';
 import 'package:malory/utils.dart';
 
@@ -189,6 +190,16 @@ class Client {
       _password = password;
     }
     return isOk;
+  }
+
+  static Future<List<Room>> availableRooms() async {
+    Response response =
+        await http.get(Uri.http(_baseUrl, "/api/available_rooms"));
+    if (response.statusCode != 200) {
+      throw HttpException(response.body);
+    }
+    List<dynamic> jsonList = jsonDecode(response.body);
+    return jsonList.map((e) => Room.fromJson(e)).toList();
   }
 
   static Future<String> apiVersion() async {

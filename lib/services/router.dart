@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:malory/screens/auth_screen.dart';
 import 'package:malory/screens/home_screen.dart';
 import 'package:malory/screens/lobby_screen.dart';
+import 'package:malory/screens/rooms_screen.dart';
 import 'package:malory/screens/wiki/units_screen.dart';
 import 'package:malory/screens/wiki/wiki_screen.dart';
 import 'package:malory/services/custom_page_route.dart';
@@ -39,6 +40,11 @@ class RouterHelper {
       case "/units":
         return CustomPageRoute(
           builder: (_) => const UnitsScreen(),
+          settings: settings,
+        );
+      case "/rooms":
+        return CustomPageRoute(
+          builder: (_) => const RoomScreen(),
           settings: settings,
         );
       default:
