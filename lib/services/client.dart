@@ -12,8 +12,11 @@ import 'package:malory/utils.dart';
 
 class Client {
   static const String _baseUrl = "127.0.0.1:5000";
+  static const ttl = Duration(milliseconds: 333);
+
   static String _useranme = "";
   static String _password = "";
+  static String _room = "";
 
   static String get username => _useranme;
 
@@ -200,6 +203,55 @@ class Client {
     }
     List<dynamic> jsonList = jsonDecode(response.body);
     return jsonList.map((e) => Room.fromJson(e)).toList();
+  }
+
+  static Future<void> joinRoom(String name) async {
+    Response response = await http.post(
+      Uri.http(_baseUrl, "/action/join_room"),
+      body: {
+        "username": _useranme,
+        "password": _password,
+        "room_name": name,
+      },
+    );
+    if (response.statusCode != 200) {
+      throw HttpException(response.body);
+    }
+    _room = name;
+  }
+
+  static Future<void> createRoom(String name, int points) async {
+    Response response = await http.post(
+      Uri.http(_baseUrl, "/action/create_room"),
+      body: {
+        "username": _useranme,
+        "password": _password,
+        "room_name": name,
+        "points": points.toString(),
+      },
+    );
+    if (response.statusCode != 200) {
+      throw HttpException(response.body);
+    }
+    _room = name;
+  }
+
+  static Stream<bool> isGameReady() async* {
+    bool ans = false;
+    while (true) {
+      Response response =
+          await http.get(Uri.http(_baseUrl, "/api/is_game_ready/$_room"));
+      if (response.statusCode != 200) {
+        throw HttpException(response.body);
+      }
+      ans = jsonDecode(response.body);
+      if (!ans) {
+        yield false;
+      } else {
+        break;
+      }
+      await Future.delayed(ttl);
+    }
   }
 
   static Future<String> apiVersion() async {
