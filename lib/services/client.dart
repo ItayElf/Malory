@@ -19,6 +19,7 @@ class Client {
   static String _room = "";
 
   static String get username => _useranme;
+  static String get room => _room;
 
   //TODO make better
   static handleExceptions(BuildContext context, Function f) async {
@@ -251,6 +252,20 @@ class Client {
         break;
       }
       await Future.delayed(ttl);
+    }
+  }
+
+  static Future<void> leaveRoom() async {
+    Response response = await http.post(
+      Uri.http(_baseUrl, "/action/leave_room"),
+      body: {
+        "username": _useranme,
+        "password": _password,
+        "room_name": _room,
+      },
+    );
+    if (response.statusCode != 200) {
+      throw HttpException(response.body);
     }
   }
 

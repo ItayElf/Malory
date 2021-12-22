@@ -25,6 +25,16 @@ class _RoomScreenState extends State<RoomScreen> {
     });
   }
 
+  void join(BuildContext context) async {
+    Client.handleExceptions(
+      context,
+      () async {
+        await Client.joinRoom(controller.text);
+        Navigator.of(context).pushNamed("/unit_selection");
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -74,7 +84,10 @@ class _RoomScreenState extends State<RoomScreen> {
                         Expanded(
                           child: TextFormField(
                             controller: controller,
-                            style: Theme.of(context).textTheme.headline6,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(fontSize: convert(15)),
                             decoration: InputDecoration(
                               hintStyle: Theme.of(context)
                                   .textTheme
@@ -97,7 +110,29 @@ class _RoomScreenState extends State<RoomScreen> {
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            join(context);
+                          },
+                        ),
+                        SizedBox(
+                          width: convert(5),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).primaryColorLight),
+                          child: Padding(
+                            padding: EdgeInsets.all(convert(5)),
+                            child: Text(
+                              "Refresh",
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                          ),
+                          onPressed: () async {
+                            List<Room> list = await Client.availableRooms();
+                            setState(() {
+                              rooms = list;
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -136,6 +171,7 @@ class _RoomScreenState extends State<RoomScreen> {
                             ),
                             child: SingleChildScrollView(
                               child: _RoomsTable(
+                                key: ValueKey(rooms),
                                 availableRooms: rooms,
                                 search: controller,
                               ),
@@ -223,6 +259,9 @@ class _RoomsTableState extends State<_RoomsTable> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle cell =
+        Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: convert(15));
+
     return DataTable(
       sortColumnIndex: _currentSortColumn,
       sortAscending: _isAscending,
@@ -230,15 +269,24 @@ class _RoomsTableState extends State<_RoomsTable> {
           MaterialStateProperty.all(Theme.of(context).primaryColor),
       columns: [
         DataColumn(
-          label: const Text("name"),
+          label: Text(
+            "name",
+            style: Theme.of(context).textTheme.headline5,
+          ),
           onSort: sort((a, b) => a.name.compareTo(b.name)),
         ),
         DataColumn(
-          label: const Text("Host"),
+          label: Text(
+            "Host",
+            style: Theme.of(context).textTheme.headline5,
+          ),
           onSort: sort((a, b) => a.player1.name.compareTo(b.player1.name)),
         ),
         DataColumn(
-          label: const Text("Points"),
+          label: Text(
+            "Points",
+            style: Theme.of(context).textTheme.headline5,
+          ),
           numeric: true,
           onSort: sort((a, b) => a.points.compareTo(b.points)),
         ),
@@ -246,6 +294,7 @@ class _RoomsTableState extends State<_RoomsTable> {
       rows: rooms
           .map(
             (e) => DataRow(
+              key: ValueKey(e),
               selected: rooms.indexOf(e) == _selectedIndex,
               onSelectChanged: (val) {
                 setState(() {
@@ -259,9 +308,24 @@ class _RoomsTableState extends State<_RoomsTable> {
                 });
               },
               cells: [
-                DataCell(Text(e.name)),
-                DataCell(Text(e.player1.name)),
-                DataCell(Text(e.points.toString())),
+                DataCell(
+                  Text(
+                    e.name,
+                    style: cell,
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    e.player1.name,
+                    style: cell,
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    e.points.toString(),
+                    style: cell,
+                  ),
+                ),
               ],
             ),
           )

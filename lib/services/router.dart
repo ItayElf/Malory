@@ -3,6 +3,7 @@ import 'package:malory/screens/auth_screen.dart';
 import 'package:malory/screens/home_screen.dart';
 import 'package:malory/screens/lobby_screen.dart';
 import 'package:malory/screens/rooms_screen.dart';
+import 'package:malory/screens/unit_selection_screen.dart';
 import 'package:malory/screens/wiki/units_screen.dart';
 import 'package:malory/screens/wiki/wiki_screen.dart';
 import 'package:malory/services/custom_page_route.dart';
@@ -45,6 +46,11 @@ class RouterHelper {
       case "/rooms":
         return CustomPageRoute(
           builder: (_) => const RoomScreen(),
+          settings: settings,
+        );
+      case "/unit_selection":
+        return CustomPageRoute(
+          builder: (_) => const UnitSelectionScreen(),
           settings: settings,
         );
       default:

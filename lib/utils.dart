@@ -15,7 +15,10 @@ void showSnackBar(BuildContext context, String message) {
       backgroundColor: Theme.of(context).primaryColor,
       content: Text(
         message,
-        style: Theme.of(context).textTheme.headline5,
+        style: Theme.of(context)
+            .textTheme
+            .bodyText1!
+            .copyWith(fontSize: convert(18)),
       ),
     ),
   );
