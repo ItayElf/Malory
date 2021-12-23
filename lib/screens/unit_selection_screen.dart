@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:malory/services/client.dart';
 import 'package:malory/utils.dart';
+import 'package:malory/widgets/jumping_swords.dart';
 
 class UnitSelectionScreen extends StatelessWidget {
   const UnitSelectionScreen({Key? key}) : super(key: key);
@@ -30,35 +31,56 @@ class UnitSelectionScreen extends StatelessWidget {
           child: StreamBuilder(
             initialData: false,
             stream: Client.isGameReady(),
-            builder: (context, snapshot) => Container(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      InkWell(
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: convert(64),
-                        ),
-                        onTap: () {
-                          quitRoom(context);
-                        },
+            builder: (context, AsyncSnapshot<bool> snapshot) => Column(
+              children: [
+                Row(
+                  children: [
+                    InkWell(
+                      child: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: convert(64),
                       ),
-                      Expanded(
-                        child: Text(
-                          Client.room,
-                          style: Theme.of(context).textTheme.headline1,
-                          textAlign: TextAlign.center,
-                        ),
+                      onTap: () {
+                        quitRoom(context);
+                      },
+                    ),
+                    Expanded(
+                      child: Text(
+                        Client.room,
+                        style: Theme.of(context).textTheme.headline1,
+                        textAlign: TextAlign.center,
                       ),
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                snapshot.data == true
+                    ? Container()
+                    : const Expanded(child: _Waiting()),
+              ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _Waiting extends StatelessWidget {
+  const _Waiting({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const JumpingSwords(swords: 3),
+          Text(
+            "Waiting for opponent...",
+            style: Theme.of(context).textTheme.headline3,
+          ),
+        ],
       ),
     );
   }
