@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:malory/screens/auth_screen.dart';
+import 'package:malory/screens/create_room_screen.dart';
 import 'package:malory/screens/home_screen.dart';
 import 'package:malory/screens/lobby_screen.dart';
 import 'package:malory/screens/rooms_screen.dart';
@@ -51,6 +52,11 @@ class RouterHelper {
       case "/unit_selection":
         return CustomPageRoute(
           builder: (_) => const UnitSelectionScreen(),
+          settings: settings,
+        );
+      case "/create_room":
+        return CustomPageRoute(
+          builder: (_) => const CreateRoom(),
           settings: settings,
         );
       default:

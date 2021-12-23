@@ -35,6 +35,10 @@ class _RoomScreenState extends State<RoomScreen> {
     );
   }
 
+  void create(BuildContext context) async {
+    Navigator.of(context).pushNamed("/create_room");
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -191,7 +195,9 @@ class _RoomScreenState extends State<RoomScreen> {
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      create(context);
+                    },
                   ),
                 ],
               ),
@@ -229,15 +235,24 @@ class _RoomsTableState extends State<_RoomsTable> {
     super.initState();
     rooms = List.from(widget.availableRooms);
     rooms.sort((a, b) => a.name.compareTo(b.name));
-    widget.search.addListener(() {
-      _selectedIndex = -1;
-      for (Room room in rooms) {
-        if (room.name == widget.search.text) {
-          _selectedIndex = rooms.indexOf(room);
-        }
+    setSelected();
+    widget.search.addListener(setSelected);
+  }
+
+  void setSelected() {
+    _selectedIndex = -1;
+    for (Room room in rooms) {
+      if (room.name == widget.search.text) {
+        _selectedIndex = rooms.indexOf(room);
       }
-      setState(() {});
-    });
+    }
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.search.removeListener(setSelected);
   }
 
   void Function(int, bool) sort(int Function(Room, Room) compare) {
